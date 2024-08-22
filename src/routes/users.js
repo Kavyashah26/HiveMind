@@ -1,6 +1,7 @@
 import { Router } from "express"
 import authMiddleware from "../middlewares/auth"
-import { deleteUser,updateUser,getUser} from "../controllers/user"
+import { deleteUser,getUser,updateUser} from "../controllers/user"
+import { errorHandler } from "../errors/error-handler"
 
 const userRoutes=Router()
 

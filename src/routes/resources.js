@@ -1,10 +1,10 @@
 import { Router } from "express"
 import authMiddleware from "../middlewares/auth"
 import adminMiddleware from "../middlewares/admin";
-import {  } from "../controllers/project"
+import {  } from "../controllers/resource"
 import { errorHandler } from "../errors/error-handler"
 
-const projectRoutes=Router()
+const resourcesRoutes=Router()
 
 // userRoutes.post('/',[authMiddleware,])
 
@@ -13,4 +13,4 @@ const projectRoutes=Router()
 
 
 
-export default projectRoutes;
+export default resourcesRoutes;
