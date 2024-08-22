@@ -1,16 +1,16 @@
 import { Router } from "express"
 import authMiddleware from "../middlewares/auth"
-import {  } from "../controllers/users"
+import { deleteUser,updateUser,getUser} from "../controllers/user"
 
 const userRoutes=Router()
 
 // userRoutes.post('/',[authMiddleware,])
-userRoutes.delete('/address/:id',[authMiddleware])
-userRoutes.get('/address',[authMiddleware])
-userRoutes.put('/:userId', [authMiddleware,updateUser])
 
 
-userRoutes.get('/:userId', [authMiddleware,getUser])
+// userRoutes.get('/',[authMiddleware])
+userRoutes.delete('/:id',[authMiddleware],errorHandler(deleteUser))
+userRoutes.put('/:userId', [authMiddleware],errorHandler(updateUser))
+userRoutes.get('/:userId', [authMiddleware],errorHandler(getUser))
 
 
 export default userRoutes;
