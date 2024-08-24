@@ -1,6 +1,6 @@
+import Resource from "./resource";
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
 const roleEnum = ["Monk", "Disciple"];
 
 const projectSchema = new Schema({
@@ -56,6 +56,12 @@ const projectSchema = new Schema({
       type: String,
     },
   ],
+  Resources: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Resource",
+    }
+  ]
 });
 
 const Project = mongoose.model("Project", projectSchema);
