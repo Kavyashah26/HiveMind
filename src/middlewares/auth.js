@@ -1,9 +1,10 @@
 // import {Request,Response,NextFunction} from 'express' 
-// import { UnauthorizedException } from '../exceptions/unauthorized'
 // import { ErrorCode } from '../exceptions/root'
 // import *  as jwt from 'jsonwebtoken'
-// import { JWT_SECRET } from '../secrets'
-// import { prismaClient } from '..'
+// // import { JWT_SECRET } from '../secrets'
+// // import { prismaClient } from '..'
+
+// const JWT_SECRET = process.env.JWT_SECRET;
 
 // const authMiddleware=async(req,res,next)=>{
 //     //extract token from header 
