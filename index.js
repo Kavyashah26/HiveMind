@@ -1,5 +1,5 @@
 import express,{Express,Request,Response}  from "express";
-import { PORT } from "./secrets";
+// import { PORT } from "./secrets";
 import rootRoutes from "./routes";
 import { errorMiddleware } from "./middlewares/errors.js";
 import { signupSchema } from "./schema/users";

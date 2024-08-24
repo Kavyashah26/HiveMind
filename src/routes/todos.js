@@ -1,8 +1,9 @@
 import { Router } from "express"
 import authMiddleware from "../middlewares/auth"
-import adminMiddleware from "../middlewares/admin";
+// import adminMiddleware from "../middlewares/admin";
 import {  getUsersTodos,markCompleted,markWaiting,getAllProjectTodos,createTodo} from "../controllers/todo"
 import { errorHandler } from "../errors/error-handler"
+import adminMiddleware from "../middlewares/admin"
 const todoRoutes=Router()
 
 // userRoutes.post('/',[authMiddleware,])
