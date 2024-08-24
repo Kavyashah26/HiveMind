@@ -12,7 +12,7 @@ const todoRoutes=Router()
 // userRoutes.get('/',[authMiddleware])
 
 
-todoRoutes.get('/:pId',[authMiddleware],errorHandler(getUsersTodos))
+todoRoutes.get('/user/:uId',[authMiddleware],errorHandler(getUsersTodos))
 todoRoutes.put('/updateByAdmin/:pid', [authMiddleware,adminMiddleware],errorHandler(markCompleted))
 todoRoutes.put('/updateByMember/:pid', [authMiddleware],errorHandler(markWaiting))
 todoRoutes.get('/:pId', [authMiddleware],errorHandler(getAllProjectTodos))
