@@ -1,21 +1,28 @@
-import express,{Express,Request,Response}  from "express";
+// import express  from "express";
+import express from "express"
 // import { PORT } from "./secrets";
-import rootRoutes from "./routes";
+// import rootRoutes from "./";
 import { errorMiddleware } from "./middlewares/errors.js";
-import { signupSchema } from "./schema/users";
+import rootRoutes from "./src/routes/index.js";
+import connectDb from "./src/db/index.js";
+// import { signupSchema } from "./schema/users";
+import dotenv from "dotenv";
+dotenv.config(); 
 
 const app=express();
 
 app.use(express.json())
 app.use('/api',rootRoutes)
 
-app.use(errorMiddleware)
+// app.use(errorMiddleware)
 
 app.get('/',(req,res)=>{
     res.send('Working')
 })
 
-app.listen(PORT,()=>{
+app.listen(3000,()=>{
     console.log("App working!!");
     
 });
+
+connectDb();

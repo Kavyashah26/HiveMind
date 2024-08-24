@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
+import {mongoose} from "mongoose"
 const Schema = mongoose.Schema;
 
 const completedEnum = ["waiting", "True", "False"];
@@ -25,4 +26,5 @@ const todoSchema = new Schema({
 
 const Todo = mongoose.model("Todo", todoSchema);
 
-module.exports = Todo;
+// module.exports = Todo;
+export default Todo

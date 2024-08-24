@@ -1,7 +1,11 @@
 import {Router} from "express"
-import userRoutes from "./users";
-import todoRoutes from "./todos";
-import projectRoutes from "./project";
+import todoRoutes from "./todos.js";
+import userRoutes from "./users.js";
+import projectRoutes from "./project.js";
+import resourcesRoutes from "./resources.js";
+// import userRoutes from "./users";
+// import todoRoutes from "./todos";
+// import projectRoutes from "./project";
 
 const rootRoutes=Router();
 
