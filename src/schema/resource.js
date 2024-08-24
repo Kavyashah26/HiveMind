@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const typeEnum = ["jpg", "png", "pdf", "link"];
@@ -20,4 +20,4 @@ const resourceSchema = new Schema({
 
 const Resource = mongoose.model("Resource", resourceSchema);
 
-module.exports = Resource;
+export default Resource;

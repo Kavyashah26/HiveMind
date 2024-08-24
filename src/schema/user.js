@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -6,14 +6,27 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
   email: {
     type: String,
     required: true,
   },
-  memberOf: {
-    type: Schema.Types.ObjectId,
-  },
+  memberOf: [
+    {
+      type: Schema.Types.ObjectId,
+    },
+  ],
+
+  adminAt: [
+    {
+      type: Schema.Types.ObjectId,
+    },
+  ],
+
   links: {
     github: {
       type: String,
@@ -27,4 +40,6 @@ const userSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+
+export default User;
