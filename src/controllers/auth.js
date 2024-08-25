@@ -90,8 +90,9 @@ console.log(JWT_SECRET);
 };
 
 export const me = async (req, res, next) => {
-    let u=await User.find({});
-    console.log(u);
+    // let u=await User.find({});
+    // console.log(u);
+    console.log(req.user);
+    
     res.json(req.user);
-  
 };

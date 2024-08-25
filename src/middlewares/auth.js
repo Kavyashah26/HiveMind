@@ -37,7 +37,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "abcdef";
         // const user=await prismaClient.user.findFirst({
         //     where:{id: payload.userId}
         // })
-        let user = await User.find({email:payload.email});
+        let user = await User.findOne({email:payload.email});
         console.log(user);
         
         if(!user){
@@ -46,7 +46,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "abcdef";
             throw new UnauthorizedException("Unauthorized exception", ErrorCode.UNAUTHORIZE_EXCEPTION);
         }
         req.user=user
-
+        console.log("User from request",req.user);
+        
         next()
 
     } catch (error) {
