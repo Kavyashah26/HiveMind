@@ -3,6 +3,7 @@ import { Router } from "express"
 // import adminMiddleware from "../middlewares/admin";
 // import { errorHandler } from "../errors/error-handler"
 import { createResource, deleteResource, updateResource } from "../controllers/resource.js";
+import authMiddleware from "../middlewares/auth.js";
 
 const resourcesRoutes=Router()
 
@@ -11,11 +12,11 @@ const resourcesRoutes=Router()
 
 // userRoutes.get('/',[authMiddleware])
 
-resourcesRoutes.post('/', (createResource))
+resourcesRoutes.post('/',[authMiddleware], (createResource))
 // resourcesRoutes.post('/', [authMiddleware,adminMiddleware],errorHandler(createResource))
-resourcesRoutes.put('/:rid', (updateResource))   // updated resource will be in request 
+resourcesRoutes.put('/:rid',[authMiddleware], (updateResource))   // updated resource will be in request 
 // resourcesRoutes.put('/:pid', [authMiddleware,adminMiddleware],errorHandler(updateResource))
-resourcesRoutes.delete('/:rid', (deleteResource))
+resourcesRoutes.delete('/:rid', [authMiddleware],(deleteResource))
 // resourcesRoutes.delete('/:rid', [authMiddleware,adminMiddleware],errorHandler(deleteResource))
 
 

@@ -1,44 +1,58 @@
-// import {Request,Response,NextFunction} from 'express' 
-// import { ErrorCode } from '../exceptions/root'
-// import *  as jwt from 'jsonwebtoken'
-// // import { JWT_SECRET } from '../secrets'
-// // import { prismaClient } from '..'
+ 
+import { ErrorCode } from '../exceptions/root.js'
+import jwt from 'jsonwebtoken'
+// import { JWT_SECRET } from '../secrets'
+// import { prismaClient } from '..'
+import  {UnauthorizedException} from "../exceptions/unauthorized.js"
+import User from '../schema/user.js';
 
-// const JWT_SECRET = process.env.JWT_SECRET;
 
-// const authMiddleware=async(req,res,next)=>{
-//     //extract token from header 
-//     // throw error if token is not there
-//     // if token is there then verify it
-//     //extract payload
-//     //get user from db through payload
-//     //to attach user to the current req object
-
-//     const token=req.headers.authorization
-//     if(!token){
-//         next(new UnauthorizedException("Unauthorized exception",ErrorCode.UNAUTHORIZE_EXCEPTION))
-//     }
-//     try {
-//         if (typeof token !== 'string') {
-//             throw new UnauthorizedException("Unauthorized exception", ErrorCode.UNAUTHORIZE_EXCEPTION);
-//         }
-//         const payload =jwt.verify(token,JWT_SECRET)
+const authMiddleware=async(req,res,next)=>{
+    //extract token from header 
+    // throw error if token is not there
+    // if token is there then verify it
+    //extract payload
+    //get user from db through payload
+    //to attach user to the current req object
+    
+const JWT_SECRET = process.env.JWT_SECRET || "abcdef";
+    const token=req.headers.authorization
+    console.log(token);
+    if(!token){
+        console.log("a");
         
-//         const user=await prismaClient.user.findFirst({
-//             where:{id: payload.userId}
-//         })
+        next(new UnauthorizedException ("Unauthorized exception",ErrorCode.UNAUTHORIZE_EXCEPTION))
+    }
+    try {
+        // if (typeof token !== 'string') {
+        //     throw new UnauthorizedException("Unauthorized exception", ErrorCode.UNAUTHORIZE_EXCEPTION);
+        // }
+        console.log("pre verify");
         
-//         if(!user){
-//             throw new UnauthorizedException("Unauthorized exception", ErrorCode.UNAUTHORIZE_EXCEPTION);
-//         }
-//         req.user=user
+        const payload =jwt.verify(token,JWT_SECRET)
+        console.log("after verify");
+        console.log(payload);
+        
+        
+        // const user=await prismaClient.user.findFirst({
+        //     where:{id: payload.userId}
+        // })
+        let user = await User.find({email:payload.email});
+        console.log(user);
+        
+        if(!user){
+            console.log("b");
+            
+            throw new UnauthorizedException("Unauthorized exception", ErrorCode.UNAUTHORIZE_EXCEPTION);
+        }
+        req.user=user
 
-//         next()
+        next()
 
-//     } catch (error) {
-//         next(new UnauthorizedException("Unauthorized exception",ErrorCode.UNAUTHORIZE_EXCEPTION))
-//     }
+    } catch (error) {
+        next(new UnauthorizedException("Unauthorized exception",ErrorCode.UNAUTHORIZE_EXCEPTION))
+    }
 
-// }
+}
 
-// export default authMiddleware
+export default authMiddleware
