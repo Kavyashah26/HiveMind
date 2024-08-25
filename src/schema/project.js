@@ -1,5 +1,5 @@
-import Resource from "./resource";
-const mongoose = require("mongoose");
+import Resource from "./resource.js";
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 const roleEnum = ["Monk", "Disciple"];
 
@@ -66,4 +66,4 @@ const projectSchema = new Schema({
 
 const Project = mongoose.model("Project", projectSchema);
 
-module.exports = Project;
+export default Project;

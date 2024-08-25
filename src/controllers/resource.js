@@ -1,7 +1,15 @@
 import Resource from "../schema/resource.js";
 
 export const createResource = async (req, res) => {
-  let newResource = await Resource.create(req.body);
+
+  let resourceBody = {
+    name:req.body.name,
+    link:req.body.link,
+    resourceType:req.body.resourceType,
+  }
+  let newResource = await Resource.create(resourceBody);
+  
+
   if (newResource) {
     res.json(newResource);
   } else {
