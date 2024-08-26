@@ -1,8 +1,8 @@
 import { Router } from "express"
-// import authMiddleware from "../middlewares/auth"
-// import adminMiddleware from "../middlewares/admin";
+import authMiddleware from "../middlewares/auth.js"
+import adminMiddleware from "../middlewares/admin.js";
 import { createProject,addProjectMembers,deleteProject,getProjectDetails,getProjectMembers,getProjectOverView,giveRoleToProjectMembers,removeProjectMembers,updateProjectDetails } from "../controllers/project.js"
-// import { errorHandler } from "../errors/error-handler"
+import { errorHandler } from "../errors/error-handler.js"
 
 const projectRoutes=Router()
 
@@ -12,10 +12,10 @@ const projectRoutes=Router()
 // userRoutes.get('/',[authMiddleware])
 
 
-projectRoutes.post('/', (createProject))
-// projectRoutes.post('/', [authMiddleware],errorHandler(createProject))
-projectRoutes.get('/:pid', (getProjectDetails))
-// projectRoutes.get('/:pid', [authMiddleware],errorHandler(getProjectDetails))
+// projectRoutes.post('/', (createProject))
+projectRoutes.post('/', [authMiddleware],errorHandler(createProject))
+// projectRoutes.get('/:pid', (getProjectDetails))
+projectRoutes.get('/:pid', [authMiddleware,adminMiddleware],errorHandler(getProjectDetails))
 projectRoutes.put('/:pid', (updateProjectDetails))   //updated project will be in request
 // projectRoutes.put('/:pid', [authMiddleware,adminMiddleware],errorHandler(updateProjectDetails))
 projectRoutes.delete('/:pid', (deleteProject))

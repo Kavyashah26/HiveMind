@@ -1,6 +1,5 @@
 // message, status code, error codes, error 
 
-
 class HttpException extends Error{
     message;
     errorCode;
@@ -40,6 +39,9 @@ const ErrorCode = Object.freeze({
     UNPROCESSABLE_ENTITY: 2001,
     INTERNAL_EXCEPTION: 3001,
     UNAUTHORIZE_EXCEPTION: 4001,
+    TODO_NOT_FOUND: 5001,
+    PROJECT_NOT_FOUND: 6001,
+    RESOURCE_NOT_FOUND: 7001,
 });
 
 export { ErrorCode,HttpException };
