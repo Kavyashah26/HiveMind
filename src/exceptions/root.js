@@ -42,6 +42,7 @@ const ErrorCode = Object.freeze({
     TODO_NOT_FOUND: 5001,
     PROJECT_NOT_FOUND: 6001,
     RESOURCE_NOT_FOUND: 7001,
+    INVALID_PROJECTID: 8001,
 });
 
 export { ErrorCode,HttpException };

@@ -2,8 +2,18 @@ import mongoose from "mongoose";
 import Project from "../schema/project.js";
 import User from "../schema/user.js";
 
+import { NotFoundException } from "../exceptions/not-found.js";
+
+import { BadRequestException } from "../exceptions/bad-request.js";
+import {InternalException} from "../exceptions/internal-exception.js";
+import { ErrorCode } from "../exceptions/root.js";
+
+
 export const createProject = async (req, res) => {
-  try {
+    let user = await User.findById(req.user.id);
+    if(!user){
+      throw new NotFoundException('User not found.',ErrorCode.USER_NOT_FOUND);
+    }
     const details = {
       pName: req.body.pName,
       pDescription: req.body.pDescription,
@@ -18,8 +28,7 @@ export const createProject = async (req, res) => {
     let newProject = await Project.create(details);
 
     if(newProject) {
-      let user = await User.findById(req.user.id);
-      const validProjectId = mongoose.Types.ObjectId(newProject.id);
+      const validProjectId = new mongoose.Types.ObjectId(newProject.id);
       user.adminAt.push(validProjectId);
       user.save();
     } else {
@@ -29,34 +38,35 @@ export const createProject = async (req, res) => {
     if (newProject) {
       res.json(newProject);
     } else {
-      res.status(400).json({ message: "Project is not created" });
+      // res.status(400).json({ message: "Project is not created" });
+    throw new InternalException('Unable to create Project',ErrorCode.INTERNAL_EXCEPTION);
     }
-  } catch (error) {
-    throw error;
-  }
+  
 };
  
 export const getProjectDetails = async (req, res) => {
-  try {
     const { pid } = req.params;
-
-    let projectDetail = await Project.findById(pid);
+  let projectDetail;
+  try {
+    projectDetail = await Project.findById(pid);
+  } catch (error) {
+    throw new InternalException('Unable to get Project details',ErrorCode.INTERNAL_EXCEPTION);
+  }
 
     if (projectDetail) {
       res.json(projectDetail);
     } else {
-      res
-        .status(400)
-        .json({ message: "Project with the given id doesn't exist" });
+      throw new NotFoundException('Project not found.',ErrorCode.PROJECT_NOT_FOUND);
     }
-  } catch (error) {
-    throw error;
-  }
 };
 
 export const updateProjectDetails = async (req, res) => {
   try {
     const { pid } = req.params;
+    //get project from pid
+    //extract alrady tags
+    // create new array tags
+    // push new tag from req
 
     const details = {
       pName: req.body.pName,
@@ -64,7 +74,7 @@ export const updateProjectDetails = async (req, res) => {
       logo_img: req.body.logo_img,
       isArchived: req.body.isArchived,
       liveUrl: req.body.liveUrl,
-      Tags: req.body.Tags,
+      Tags: req.body.Tags,  // give new tag
     };
 
     let updateProjectDetails = await Project.findByIdAndUpdate(
@@ -90,6 +100,8 @@ export const updateProjectDetails = async (req, res) => {
 
 export const deleteProject = async (req, res) => {
   try {
+//remove project from user -> admin at and member of 
+
     const { pid } = req.params;
     let deletedProject = await Project.deleteOne({ id: pid });
 
@@ -98,37 +110,41 @@ export const deleteProject = async (req, res) => {
         message: "Deleted project",
       });
     } else {
-      res
-        .status(400)
-        .json({ message: "Project with the given id doesn't exist" });
+      throw new NotFoundException("Project not found",ErrorCode.PROJECT_NOT_FOUND)
     }
   } catch (error) {
     throw error;
   }
 };
+
 
 export const getProjectOverView = async (req, res) => {
-  try {
+  // try {
     const { pid } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(pid)) {
+      console.log("\t\t\tInvalid");
+      throw new BadRequestException('Project id is invalid',ErrorCode.INVALID_PROJECTID );
+      // throw new BadRequestException("Project id is invalid",ErrorCode.INVALID_PROJECTID)
+      console.log("After bad request");
+      }else{
 
-    let projectDetail = await Project.findById(pid, "liveUrl pName githubUrl");
-
-    if (projectDetail) {
-      res.json(projectDetail);
-    } else {
-      res
-        .status(400)
-        .json({ message: "Project with the given id doesn't exist" });
-    }
-  } catch (error) {
-    throw error;
-  }
+        const objectId = new mongoose.Types.ObjectId(pid);
+        let projectDetail = await Project.findById(objectId, "liveUrl pName githubUrl");
+        
+        if (projectDetail) {
+          res.json(projectDetail);
+        } else {
+          res
+          .status(400)
+          .json({ message: "Project with the given id doesn't exist" });
+        }
+      }
 };
 
+//send roles also
 export const getProjectMembers = async (req, res) => {
-  try {
     const { pid } = req.params;
-
+    
     let getMemberIds = await Project.findById(pid, "teamMembers");
 
     let teamMemberDetails = await Promise.all(
@@ -141,25 +157,29 @@ export const getProjectMembers = async (req, res) => {
             name: memberDetail.name,
           };
         } else {
-          res.json("Something went wrong");
+          throw new NotFoundException('Memebr not found.',ErrorCode.USER_NOT_FOUND);
         }
       })
     );
     res.json(teamMemberDetails);
-  } catch (error) {
-    throw error;
-  }
+  
 };
 
+//make sure one memebr cann't be added multiple times
 export const addProjectMembers = async (req, res) => {
-  try {
     const { pid } = req.params;
-    const memberId = req.body.memberId;
+    const mID = req.body.memberId;
+    if (!mongoose.Types.ObjectId.isValid(mID)) {
+      console.log("\t\t\tInvalid");
+      throw new BadRequestException('Project id is invalid',ErrorCode.INVALID_PROJECTID );
+      // throw new BadRequestException("Project id is invalid",ErrorCode.INVALID_PROJECTID)
+      console.log("After bad request");
+      }
+      const memberId = new mongoose.Types.ObjectId(mID);
+       
     let user = await User.findById(memberId);
     if(!user) {
-      res
-        .status(400)
-        .json({ message: "Project with the given id doesn't exist" });
+      throw new NotFoundException('User not found.',ErrorCode.USER_NOT_FOUND);
     }
 
     let addMember = await Project.findByIdAndUpdate(
@@ -169,23 +189,21 @@ export const addProjectMembers = async (req, res) => {
     );
 
     if(addMember) {
-      let cpid = mongoose.Types.ObjectId(pid);
+      let cpid = new mongoose.Types.ObjectId(pid);
       user.memberOf.push(cpid);
-      user.save();
+      await user.save();
     }
 
     if (addMember) {
       res.json(addMember);
     } else {
-      res
-        .status(400)
-        .json({ message: "Member is not added in project" });
+      throw new InternalException('Unable to Add member to Project',ErrorCode.INTERNAL_EXCEPTION);
     }
-  } catch (error) {
-    throw error;
-  }
+  
 };
 
+
+// wait - arsh will complete
 export const giveRoleToProjectMembers = async (req, res) => {
   try {
     const { pid } = req.params;
@@ -220,6 +238,7 @@ export const giveRoleToProjectMembers = async (req, res) => {
   }
 };
 
+// wait - arsh will complete
 export const removeProjectMembers = async (req, res) => {
   try {
     const { pid } = req.params;
