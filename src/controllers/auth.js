@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import User from "../schema/user.js";
 // import { JWT_SECRET } from "../secrets";
 
+import { BadRequestException } from "../exceptions/bad-request";
+import { NotFoundException } from "../exceptions/not-found";
 
 export const signup = async (req, res, next) => {
   // signupSchema.parse(req.body)
@@ -22,9 +24,9 @@ export const signup = async (req, res, next) => {
   //             password:hashSync(password,10)
   //         }
   //     })
-  // if(user){
-  //   res.json({"error":"User already exist"});
-  // }
+  if(user){
+    new BadRequestException('User already exist',ErrorCode.USER_ALREADY_EXIST)
+  }
 
   const hashedPassword = hashSync(password, 10);
   user = await User.create({
@@ -32,8 +34,7 @@ export const signup = async (req, res, next) => {
       email,
       password: hashedPassword,
     });
-    // console.log(user);
-  // const user={};
+
   res.json(user);
 };
 
@@ -59,15 +60,14 @@ console.log(JWT_SECRET);
   let user = await User.findOne({email});
 //   console.log("end find");
 
+  if(!user){
+    throw new NotFoundException('User not found.',ErrorCode.USER_NOT_FOUND);
+  }
 
-//   if (!user) {
-//     // return user not found
-//   }
-
-  // if(!compareSync(password,user.password)){
-  //     //return incorrect password
-  //     res.json({"error":"Incorrect password"})
-  // }
+  if(!compareSync(password,user.password)){
+      //return incorrect password
+      res.json({"error":"Incorrect password"})
+  }
   console.log("pre jwt");
 
   const token = jwt.sign(
