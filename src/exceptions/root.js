@@ -45,6 +45,8 @@ const ErrorCode = Object.freeze({
     INVALID_PROJECTID: 8001,
     USER_ALREADY_EXIST_IN_PROJECT: 9001,
     MEMEBER_NOT_FOUND:10001,
+    TODO_ALREADY_IN_WAITING:11001,
+    TODO_ALREADY_IN_COMPLETED:11001,
 });
 
 export { ErrorCode,HttpException };
