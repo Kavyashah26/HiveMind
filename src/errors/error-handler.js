@@ -37,17 +37,27 @@ export const errorHandler = (method) => {
             await method(req, res, next);
         } catch (error) {
             let exception;
-
+            // console.log("In error handler", error);
+            
             if (error instanceof HttpException) {
+                // console.log("Http error");
+                
                 exception = error;
             } else {
+                // console.log("In else");
+                
                 if (error instanceof ZodError) {
+                    // console.log("In zod");
+                    
                     exception = new BadRequestException(
                         'Unprocessable entity, ZOD error',
                         ErrorCode.UNPROCESSABLE_ENTITY,
                         error
                     );
                 } else {
+                    // console.log("In internal");
+                    console.log(error);
+                    
                     exception = new InternalException(
                         'Something went wrong internally',
                         error,

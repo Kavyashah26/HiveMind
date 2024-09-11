@@ -4,8 +4,9 @@ import jwt from "jsonwebtoken";
 import User from "../schema/user.js";
 // import { JWT_SECRET } from "../secrets";
 
-import { BadRequestException } from "../exceptions/bad-request";
-import { NotFoundException } from "../exceptions/not-found";
+import { BadRequestException } from "../exceptions/bad-request.js";
+import { NotFoundException } from "../exceptions/not-found.js";
+import { ErrorCode } from "../exceptions/root.js";
 
 export const signup = async (req, res, next) => {
   // signupSchema.parse(req.body)
@@ -15,7 +16,11 @@ export const signup = async (req, res, next) => {
   //     let user=await prismaClient.user.findFirst({
   //         where:{email}
   //     })
+  console.log("Before find");
+  
   let user = await User.findOne({ email: email });
+  
+  console.log("after find");
   //   //check if user already exist
   //     user=await prismaClient.user.create({
   //         data:{
@@ -24,16 +29,26 @@ export const signup = async (req, res, next) => {
   //             password:hashSync(password,10)
   //         }
   //     })
+  // console.log(user);
+  
   if(user){
-    new BadRequestException('User already exist',ErrorCode.USER_ALREADY_EXIST)
+    // console.log("In user");
+    
+    throw new BadRequestException('User already exist',ErrorCode.USER_ALREADY_EXIST )
+    // console.log("After user");
+    
   }
-
+  console.log("before hashsync");
+  
   const hashedPassword = hashSync(password, 10);
+  console.log("hash",hashedPassword);
+  
   user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
+    name,
+    email,
+    password: hashedPassword,
+  });
+  console.log("after hashsync");
 
   res.json(user);
 };
@@ -59,13 +74,21 @@ console.log(JWT_SECRET);
 //   console.log("pre find");
   let user = await User.findOne({email});
 //   console.log("end find");
+console.log("User",user);
 
   if(!user){
+    console.log("!user");
     throw new NotFoundException('User not found.',ErrorCode.USER_NOT_FOUND);
   }
+  console.log("before compare sync");
+  
+  console.log(password);
+  console.log(user.password);
 
+  
   if(!compareSync(password,user.password)){
       //return incorrect password
+      console.log("Incorrrect password");
       res.json({"error":"Incorrect password"})
   }
   console.log("pre jwt");
