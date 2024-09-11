@@ -56,7 +56,7 @@ export const errorHandler = (method) => {
                     );
                 } else {
                     // console.log("In internal");
-                    // console.log(error);
+                    console.log(error);
                     
                     exception = new InternalException(
                         'Something went wrong internally',

@@ -35,6 +35,8 @@ const adminMiddleware=async(req,res,next)=>{
         // console.log("adminId", adminId);
         const uid = req.user.id;
         // console.log("uid",uid);
+        // console.log("leaderid",projectDetail.teamLeader);
+        
         if(!projectDetail){
             //   throw new NotFoundException('Project not found.',ErrorCode.PROJECT_NOT_FOUND);
             next(new NotFoundException("Project not found",ErrorCode.PROJECT_NOT_FOUND))

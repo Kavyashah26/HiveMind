@@ -76,6 +76,7 @@ export const getAllProjectTodos = async (req, res) => {
   }
 };
 
+// check pid,assignedto is correct
 export const createTodo = async (req, res) => {
   try {
     let { pid } = req.params;
