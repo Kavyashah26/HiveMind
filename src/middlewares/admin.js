@@ -8,7 +8,20 @@ import { NotFoundException } from "../exceptions/not-found.js";
 import { BadRequestException } from "../exceptions/bad-request.js";
 
 const adminMiddleware=async(req,res,next)=>{
-    const {pid} = req.params;
+    let pid
+    // if(Object.keys(req.params).length === 0){
+    if(!req.params.pid){
+         pid=req.body.pid;
+    }else{
+         pid = req.params.pid;
+    }
+    console.log("req.params",req.params);
+    
+    console.log("Pid",pid);
+    // if(pid==null){
+    //     console.log("Pid1",pid);
+    // }
+    
     if (!mongoose.Types.ObjectId.isValid(pid)) {
         console.log("\t\t\tInvalid");
         
