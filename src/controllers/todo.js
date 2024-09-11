@@ -30,7 +30,10 @@ export const getUsersTodos = async (req, res) => {
   if (allTodo) {
     res.json(allTodo);
   } else {
-    res.status(404).json({ message: "Todo not found" });
+    throw new InternalException(
+      "Unable to get Todo",
+      ErrorCode.INTERNAL_EXCEPTION
+    );
   }
 };
 
@@ -75,7 +78,10 @@ export const markCompleted = async (req, res) => {
   if (result.matchedCount) {
     res.json({ message: "Todo marked as completed" });
   } else {
-    res.status(404).json({ message: "Todo not found" });
+    throw new InternalException(
+      "Unable to mark Todo as True",
+      ErrorCode.INTERNAL_EXCEPTION
+    );
   }
 };
 
@@ -125,7 +131,10 @@ export const markWaiting = async (req, res) => {
   if (result.matchedCount) {
     res.json({ message: "Todo marked as waiting" });
   } else {
-    res.status(404).json({ message: "Todo not found" });
+    throw new InternalException(
+      "Unable to mark Todo as waiting",
+      ErrorCode.INTERNAL_EXCEPTION
+    );
   }
 };
 
@@ -153,7 +162,10 @@ export const getAllProjectTodos = async (req, res) => {
   if (allTodos) {
     res.json(allTodos);
   } else {
-    res.status(404).json({ message: "Todo not found" });
+    throw new InternalException(
+      "Unable to find Todo",
+      ErrorCode.INTERNAL_EXCEPTION
+    );
   }
 };
 
