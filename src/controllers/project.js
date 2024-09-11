@@ -16,6 +16,16 @@ export const createProject = async (req, res) => {
       Tags: req.body.Tags,
     };
     let newProject = await Project.create(details);
+
+    if(newProject) {
+      let user = await User.findById(req.user.id);
+      const validProjectId = mongoose.Types.ObjectId(newProject.id);
+      user.adminAt.push(validProjectId);
+      user.save();
+    } else {
+      res.status(400).json({ message: "Project id doesn't store in user details" });
+    }
+
     if (newProject) {
       res.json(newProject);
     } else {
@@ -145,6 +155,12 @@ export const addProjectMembers = async (req, res) => {
   try {
     const { pid } = req.params;
     const memberId = req.body.memberId;
+    let user = await User.findById(memberId);
+    if(!user) {
+      res
+        .status(400)
+        .json({ message: "Project with the given id doesn't exist" });
+    }
 
     let addMember = await Project.findByIdAndUpdate(
       pid,
@@ -152,12 +168,18 @@ export const addProjectMembers = async (req, res) => {
       { runValidators: true, new: true }
     );
 
+    if(addMember) {
+      let cpid = mongoose.Types.ObjectId(pid);
+      user.memberOf.push(cpid);
+      user.save();
+    }
+
     if (addMember) {
       res.json(addMember);
     } else {
       res
         .status(400)
-        .json({ message: "Project with the given id doesn't exist" });
+        .json({ message: "Member is not added in project" });
     }
   } catch (error) {
     throw error;
@@ -208,6 +230,15 @@ export const removeProjectMembers = async (req, res) => {
       { $pull: { teamMembers: { teamMember: memberId } } },
       { runValidators: true, new: true }
     );
+
+    if(updateProject) {
+      let user = await User.findById(memberId);
+      let cpid = mongoose.Types.ObjectId(pid);
+      user.memberOf.pull(cpid);
+      await user.save()
+    } else {
+      res.status(400).json({ message: "" });
+    }
 
     if (updatedProject) {
       res.json(updatedProject);
