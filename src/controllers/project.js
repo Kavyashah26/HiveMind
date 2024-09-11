@@ -25,7 +25,7 @@ export const createProject = async (req, res) => {
     throw error;
   }
 };
-
+ 
 export const getProjectDetails = async (req, res) => {
   try {
     const { pid } = req.params;
