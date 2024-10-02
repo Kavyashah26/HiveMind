@@ -23,6 +23,7 @@ const projectRoutes = Router();
 
 // userRoutes.get('/',[authMiddleware])
 
+
 // projectRoutes.post('/', (createProject))
 projectRoutes.post("/", [authMiddleware], errorHandler(createProject));
 projectRoutes.get("/all", [authMiddleware], errorHandler(getAllProjectDetails));
