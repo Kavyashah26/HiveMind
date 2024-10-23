@@ -10,7 +10,8 @@ import { BadRequestException } from "../exceptions/bad-request.js";
 
 //give all todos of a specific user
 export const getUsersTodos = async (req, res) => {
-  let { uId } = req.params;
+  // let { uId } = req.params;
+  let {uId}=req.user.id;
 
   if (!mongoose.Types.ObjectId.isValid(uId)) {
     throw new BadRequestException(

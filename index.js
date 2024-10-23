@@ -31,9 +31,9 @@ app.use('/api', rootRoutes);
 app.use(errorMiddleware);
 
 // Test route
-app.get('/', (req, res) => {
-  res.send('Working');
-});
+  app.get('/', (req, res) => {
+    res.send('Working');
+  });
 
 // Start server
 const PORT = process.env.PORT || 3000;

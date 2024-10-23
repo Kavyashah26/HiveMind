@@ -16,7 +16,7 @@ const todoRoutes = Router();
 
 // userRoutes.get('/',[authMiddleware])
 
-todoRoutes.get('/user/:uId', [authMiddleware] ,errorHandler(getUsersTodos));
+todoRoutes.get('/user/', [authMiddleware] ,errorHandler(getUsersTodos));
 // todoRoutes.put("/updateByAdmin/:pid", markCompleted);
 todoRoutes.put('/updateByAdmin/:pid', [authMiddleware,adminMiddleware],errorHandler(markCompleted))
 // todoRoutes.put("/updateByMember/:pid", markWaiting);
