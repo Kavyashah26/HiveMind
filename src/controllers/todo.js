@@ -143,17 +143,20 @@ export const markWaiting = async (req, res) => {
 
 //get all project todos
 export const getAllProjectTodos = async (req, res) => {
-  let { pid } = req.params;
-  console.log(pid);
+  const { pid } = req.params;
+
+  // Check if the project ID is valid
   if (!mongoose.Types.ObjectId.isValid(pid)) {
     throw new BadRequestException(
-      "Project id is invalid",
+      "Project ID is invalid",
       ErrorCode.INVALID_PROJECTID
     );
   }
-  let pIdObjectId = new mongoose.Types.ObjectId(pid);
 
-  let project = await Project.findById(pIdObjectId);
+  const pIdObjectId = new mongoose.Types.ObjectId(pid);
+
+  // Find the project by ID
+  const project = await Project.findById(pIdObjectId);
   if (!project) {
     throw new NotFoundException(
       "Project not found.",
@@ -161,16 +164,38 @@ export const getAllProjectTodos = async (req, res) => {
     );
   }
 
-  const allTodos = await Todo.find({ pId: pIdObjectId });
-  if (allTodos) {
-    res.json(allTodos);
-  } else {
+  // Find all Todos for the project
+  let allTodos = await Todo.find({ pId: pIdObjectId });
+
+  if (!allTodos) {
     throw new InternalException(
-      "Unable to find Todo",
+      "Unable to find Todos",
       ErrorCode.INTERNAL_EXCEPTION
     );
   }
+
+  // Modify each todo to include the name of the assigned user
+  const todosWithUserNames = await Promise.all(
+    allTodos.map(async (todo) => {
+      const user = await User.findById(todo.assignedTo);
+      if (user) {
+        return {
+          ...todo.toObject(), // Convert todo to plain object to modify it
+          assignedToName: user.name, // Add the user's name to the todo
+        };
+      } else {
+        return {
+          ...todo.toObject(),
+          assignedToName: "Unknown User", // Handle case where user is not found
+        };
+      }
+    })
+  );
+
+  // Respond with the modified todos
+  res.json(todosWithUserNames);
 };
+
 
 export const createTodo = async (req, res) => {
   let { pid } = req.params;

@@ -57,7 +57,7 @@ export const getProjectDetails = async (req, res) => {
  const { pid } = req.params;
  let projectDetail;
  try {
-   projectDetail = await Project.findById(pid);
+   projectDetail = await Project.findById(pid).populate('Resources');
  } catch (error) {
    throw new InternalException(
      "Unable to get Project details",
