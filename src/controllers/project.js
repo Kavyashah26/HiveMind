@@ -100,7 +100,6 @@ export const updateProjectDetails = async (req, res) => {
      Tags: tagarr, // give new tag
    };
 
-
    let updateProjectDetails = await Project.findByIdAndUpdate(pid, details, {
      runValidators: true,
      new: true,
