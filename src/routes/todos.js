@@ -9,12 +9,7 @@ import {
   createTodo,
 } from "../controllers/todo.js";
 import { errorHandler } from "../errors/error-handler.js"
-// import adminMiddleware from "../middlewares/admin"
 const todoRoutes = Router();
-
-// userRoutes.post('/',[authMiddleware,])
-
-// userRoutes.get('/',[authMiddleware])
 
 todoRoutes.get('/user/', [authMiddleware] ,errorHandler(getUsersTodos));
 // todoRoutes.put("/updateByAdmin/:pid", markCompleted);
