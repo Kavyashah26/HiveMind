@@ -3,7 +3,7 @@ import { hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../schema/user.js";
 // import { JWT_SECRET } from "../secrets";
-
+import Project from "../schema/project.js";
 import { BadRequestException } from "../exceptions/bad-request.js";
 import { NotFoundException } from "../exceptions/not-found.js";
 import { ErrorCode } from "../exceptions/root.js";
@@ -113,9 +113,46 @@ console.log("User",user);
 };
 
 export const me = async (req, res, next) => {
-    // let u=await User.find({});
-    // console.log(u);
-    console.log(req.user);
-    
-    res.json(req.user);
+  try {
+      // Log the user information
+      console.log(req.user);
+
+      // Fetch the user data
+      const user = req.user;
+
+      // Create a new object to hold the modified user details
+      const userDetails = { ...user.toObject() }; // Copy user object to avoid mutation
+
+      // Fetch project details for memberOf
+      userDetails.memberOf = await Promise.all(
+          user.memberOf.map(async (projectId) => {
+              const project = await Project.findById(projectId).select('pName githubUrl liveUrl'); // Fetch specific fields
+              return {
+                  id: projectId,
+                  name: project ? project.pName : null,
+                  githubUrl: project ? project.githubUrl : null,
+                  liveUrl: project ? project.liveUrl : null,
+              };
+          })
+      );
+
+      // Fetch project details for adminAt
+      userDetails.adminAt = await Promise.all(
+          user.adminAt.map(async (projectId) => {
+              const project = await Project.findById(projectId).select('pName githubUrl liveUrl'); // Fetch specific fields
+              return {
+                  id: projectId,
+                  name: project ? project.pName : null,
+                  githubUrl: project ? project.githubUrl : null,
+                  liveUrl: project ? project.liveUrl : null,
+              };
+          })
+      );
+
+      // Respond with the modified user details
+      res.json(userDetails);
+  } catch (error) {
+      console.error("Error fetching user details:", error);
+      next(error); // Pass the error to the error-handling middleware
+  }
 };
