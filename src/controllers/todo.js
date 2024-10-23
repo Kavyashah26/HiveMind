@@ -11,7 +11,9 @@ import { BadRequestException } from "../exceptions/bad-request.js";
 //give all todos of a specific user
 export const getUsersTodos = async (req, res) => {
   // let { uId } = req.params;
-  let {uId}=req.user.id;
+  console.log("UserID:",req.user.id);
+  let uId=req.user.id;
+  
 
   if (!mongoose.Types.ObjectId.isValid(uId)) {
     throw new BadRequestException(
@@ -175,8 +177,10 @@ export const createTodo = async (req, res) => {
   console.log("create to do");
 
   pid = new mongoose.Types.ObjectId(pid);
+  console.log("pid",pid);
   let userId = new mongoose.Types.ObjectId(req.body.assignedTo);
-
+  console.log("uid",userId);
+  
   let project = await Project.findById(pid);
   if (!project) {
     throw new NotFoundException(
@@ -184,14 +188,16 @@ export const createTodo = async (req, res) => {
       ErrorCode.PROJECT_NOT_FOUND
     );
   }
-
+  console.log("project", project);
+  
   let user = await User.findById(userId);
   if (!user) {
     throw new NotFoundException("User not found.", ErrorCode.USER_NOT_FOUND);
   }
-
+  console.log("user",user);
+  
   const existingMember = project.teamMembers.find(
-    (mem) => mem.teamMember.toString() === memberId.toString()
+    (mem) => mem.teamMember.toString() === userId.toString()
   );
   if (!existingMember) {
     throw new NotFoundException(
@@ -199,7 +205,8 @@ export const createTodo = async (req, res) => {
       ErrorCode.MEMEBER_NOT_FOUND
     );
   }
-
+  console.log("true exist");
+  
   let newTodo = {
     pId: pid,
     assignedTo: userId,
