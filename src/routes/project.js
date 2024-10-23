@@ -14,6 +14,7 @@ import {
   getAllProjectDetails,
   getProjectOfMember,
   getProjectOfAdmin,
+  requestToJoin,
 } from "../controllers/project.js";
 import { errorHandler } from "../errors/error-handler.js";
 
@@ -73,6 +74,12 @@ projectRoutes.put(
   "/removeMember/:pid",
   [authMiddleware, adminMiddleware],
   errorHandler(removeProjectMembers)
+);
+
+projectRoutes.put(
+  "/request/:pid",
+  [authMiddleware],
+  errorHandler(requestToJoin)
 );
 
 export default projectRoutes;

@@ -405,7 +405,7 @@ export const getProjectOfAdmin = async (req, res) => {
     }
 
     let projects = await Project.find({
-      "teamLeader": userId,
+      teamLeader: userId,
     }).select("pName pDescription githubUrl liveUrl Tags");
 
     if (!projects) {
@@ -423,4 +423,39 @@ export const getProjectOfAdmin = async (req, res) => {
       ErrorCode.PROJECT_NOT_FOUND
     );
   }
+};
+
+export const requestToJoin = async (req, res) => {
+  const { pid } = req.params;
+  const userId = req.user.id;
+  const project = await Project.findById(pid);
+
+  console.log(project);
+  if (!project) {
+    throw new NotFoundException(
+      "Project not found.",
+      ErrorCode.PROJECT_NOT_FOUND
+    );
+  }
+
+  console.log("before bad request");
+  const isAlreadyWaiting = project.waitingMembers.some(
+    (member) => member.waitingMember.toString() === userId.toString()
+  );
+  console.log("after bad request");
+  console.log(isAlreadyWaiting);
+  if (isAlreadyWaiting) {
+    throw new BadRequestException(
+      "User is already in the waiting list.",
+      ErrorCode.INTERNAL_EXCEPTION
+    );
+  }
+
+  console.log("before pushing");
+  // Add userId to waitingMembers
+  project.waitingMembers.push({ waitingMember: userId });
+  console.log("after pushing");
+  // Save the updated project
+  await project.save();
+  res.json({ project });
 };
